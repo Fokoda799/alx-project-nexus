@@ -228,102 +228,102 @@ AudioVerse is a comprehensive audiobook streaming platform that allows users to 
 
 ```python
 # User (extends Django AbstractUser)
-- email (unique)
-- profile_picture
-- bio
-- created_at
-- updated_at
+- id (PK, auto)
+- email (unique, required)
+- username (unique, required)
+- password (hashed, required)
+- profile_picture (URL/File, optional)
+- bio (TextField, optional)
+- created_at (DateTime, auto)
+- updated_at (DateTime, auto)
 
 # Author
-- name
-- bio
-- photo
-- website
-- created_at
-- updated_at
+- id (PK, auto)
+- name (CharField 255, required)
+- bio (TextField, optional)
+- photo (URL/File, optional)
+- website (URLField, optional)
+- created_at (DateTime, auto)
+- updated_at (DateTime, auto)
 
 # Narrator
-- name
-- bio
-- photo
-- created_at
-- updated_at
+- id (PK, auto)
+- name (CharField 255, required)
+- bio (TextField, optional)
+- photo (URL/File, optional)
+- created_at (DateTime, auto)
+- updated_at (DateTime, auto)
 
 # Genre
-- name
-- description
-- created_at
-- updated_at
+- id (PK, auto)
+- name (CharField 100, unique, required)
+- description (TextField, optional)
+- created_at (DateTime, auto)
+- updated_at (DateTime, auto)
 
 # Audiobook
-- title
-- description
-- cover_image
-- audio_file (S3 URL)
-- duration
-- release_date
-- language
-- publisher
-- isbn
-- author (FK)
-- narrator (FK)
-- genres (M2M)
-- average_rating
-- total_ratings
-- total_reviews
-- play_count
-- created_at
-- updated_at
+- id (PK, auto)
+- title (CharField 500, required, indexed)
+- description (TextField, required)
+- cover_image (URL/File, required)
+- audio_file (URLField, required - S3 URL)
+- duration_seconds (PositiveIntegerField, required)
+- release_date (DateField, optional)
+- language (CharField 50, required)
+- publisher (CharField 255, optional)
+- isbn (CharField 13, unique, optional)
+- authors (M2M to Author)
+- narrators (M2M to Narrator)
+- genres (M2M to Genre)
+- average_rating (DecimalField 3,2, default 0.00)
+- total_ratings (PositiveIntegerField, default 0)
+- total_reviews (PositiveIntegerField, default 0)
+- play_count (PositiveIntegerField, default 0)
+- created_at (DateTime, auto)
+- updated_at (DateTime, auto)
 
 # Chapter
-- audiobook (FK)
-- title
-- start_time
-- end_time
-- chapter_number
-- created_at
-- updated_at
+- id (PK, auto)
+- audiobook (FK to Audiobook, cascade delete)
+- title (CharField 255, required)
+- start_time_seconds (PositiveIntegerField, required)
+- end_time_seconds (PositiveIntegerField, required)
+- chapter_number (PositiveIntegerField, required)
+- created_at (DateTime, auto)
+- updated_at (DateTime, auto)
+- UNIQUE constraint on (audiobook, chapter_number)
 
 # ListeningProgress
-- user (FK)
-- audiobook (FK)
-- current_position
-- total_duration
-- completed
-- last_listened_at
-- updated_at
-
-# UserLibrary
-- user (FK)
-- audiobook (FK)
-- added_at
-- is_favorite
-- updated_at
+- id (PK, auto)
+- user (FK to User, cascade delete)
+- audiobook (FK to Audiobook, cascade delete)
+- current_position_seconds (PositiveIntegerField, default 0)
+- is_completed (Boolean, default False)
+- is_favorite (Boolean, default False)
+- last_listened_at (DateTime, auto, indexed)
+- created_at (DateTime, auto)
+- updated_at (DateTime, auto)
+- UNIQUE constraint on (user, audiobook)
 
 # Review
-- user (FK)
-- audiobook (FK)
-- rating (1-5)
-- review_text
-- helpful_count
-- created_at
-- updated_at
+- id (PK, auto)
+- user (FK to User, cascade delete)
+- audiobook (FK to Audiobook, cascade delete)
+- rating (IntegerField, required, 1-5 constraint)
+- review_text (TextField, optional)
+- helpful_count (PositiveIntegerField, default 0)
+- created_at (DateTime, auto, indexed)
+- updated_at (DateTime, auto)
+- UNIQUE constraint on (user, audiobook)
 
-# Bookmark
-- user (FK)
-- audiobook (FK)
-- timestamp
-- note
-- created_at
-- updated_at
-
-# history
-- user (FK)
-- audiobook (FK)
-- timestamp
-- ListeningProgress (FK)
-- created_at
-- updated_at
+# Library
+- id (PK, auto)
+- user (FK to User, cascade delete)
+- audiobook (FK to Audiobook, cascade delete)
+- timestamp_seconds (PositiveIntegerField, required)
+- collection (TextField, required)
+- added_at (DateTime, auto)
+- updated_at (DateTime, auto)
 ```
 
 ---
