@@ -19,6 +19,7 @@ AudioVerse is a comprehensive audiobook streaming platform that allows users to 
 
 ### Audiobook Discovery
 - Browse audiobooks catalog
+- Upload audiobooks by users
 - Advanced search (title, author, narrator)
 - Filter by genre, duration, popularity, and release date
 - Detailed audiobook information pages
@@ -231,21 +232,28 @@ AudioVerse is a comprehensive audiobook streaming platform that allows users to 
 - profile_picture
 - bio
 - created_at
+- updated_at
 
 # Author
 - name
 - bio
 - photo
 - website
+- created_at
+- updated_at
 
 # Narrator
 - name
 - bio
 - photo
+- created_at
+- updated_at
 
 # Genre
 - name
 - description
+- created_at
+- updated_at
 
 # Audiobook
 - title
@@ -264,6 +272,8 @@ AudioVerse is a comprehensive audiobook streaming platform that allows users to 
 - total_ratings
 - total_reviews
 - play_count
+- created_at
+- updated_at
 
 # Chapter
 - audiobook (FK)
@@ -271,6 +281,8 @@ AudioVerse is a comprehensive audiobook streaming platform that allows users to 
 - start_time
 - end_time
 - chapter_number
+- created_at
+- updated_at
 
 # ListeningProgress
 - user (FK)
@@ -279,12 +291,14 @@ AudioVerse is a comprehensive audiobook streaming platform that allows users to 
 - total_duration
 - completed
 - last_listened_at
+- updated_at
 
 # UserLibrary
 - user (FK)
 - audiobook (FK)
 - added_at
 - is_favorite
+- updated_at
 
 # Review
 - user (FK)
@@ -301,6 +315,15 @@ AudioVerse is a comprehensive audiobook streaming platform that allows users to 
 - timestamp
 - note
 - created_at
+- updated_at
+
+# history
+- user (FK)
+- audiobook (FK)
+- timestamp
+- ListeningProgress (FK)
+- created_at
+- updated_at
 ```
 
 ---
@@ -333,6 +356,9 @@ GET    /api/audiobooks/:id/chapters/
 GET    /api/audiobooks/search/?q=query&genre=&author=
 GET    /api/audiobooks/recommended/
 GET    /api/audiobooks/:id/similar/
+POST   /api/aduiobooks/
+PUT    /api/aduiobooks/:id/
+DELETE /api/aduiobooks/:id/
 ```
 
 ### Library
@@ -343,6 +369,12 @@ DELETE /api/library/:audiobookId/
 GET    /api/library/favorites/
 GET    /api/library/currently-listening/
 GET    /api/library/history/
+```
+### Listening
+```
+GET    /api/listening/current/         # In progress
+GET    /api/listening/history/         # All listened (complete + incomplete)
+GET    /api/listening/completed/       # Finished audiobooks only
 ```
 
 ### Progress
