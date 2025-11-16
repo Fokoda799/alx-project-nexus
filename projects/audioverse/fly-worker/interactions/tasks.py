@@ -5,10 +5,6 @@ from .models import ListeningProgress, Review
 from audiobooks.models import Audiobook
 
 @shared_task
-def test_task():
-    return "Test task executed successfully"
-
-@shared_task
 def update_audiobook_statistics(audiobook_id):
     """Update cached statistics for an audiobook"""
     try:

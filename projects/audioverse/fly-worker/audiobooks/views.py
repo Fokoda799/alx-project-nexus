@@ -6,7 +6,6 @@ from .models import Author, Narrator, Genre, Audiobook
 from django.core.cache import cache
 from django.conf import settings
 from .utils import get_cached_audiobooks, invalidate_audiobook_cache
-from interactions.tasks import test_task
 from .serializers import (
     AuthorSerializer, 
     NarratorSerializer, 
@@ -86,7 +85,6 @@ class AudiobookViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         """Retrieve audiobook with caching"""
-        test_task.delay()  # Example of calling the test task
         audiobook_id = kwargs.get('pk')
         cache_key = f'audiobook_{audiobook_id}'
         

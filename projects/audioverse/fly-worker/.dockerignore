@@ -1,0 +1,30 @@
+fly.toml
+.git/
+*.sqlite3
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Git
+.git
+.gitignore
+
+# Node / frontend build files (if any)
+node_modules/
+dist/
+build/
+
+# Media / uploads
+media/
+staticfiles/
+
+# Logs
+*.log
+logs/

@@ -1,20 +1,22 @@
-# fly.toml app configuration file generated for audioverse-worker on 2025-11-16T18:49:33+01:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
+app = "audioverse-worker"
 
-app = 'audioverse-worker'
-primary_region = 'cdg'
+[build]
+  dockerfile = "Dockerfile"
 
-[http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = 'stop'
-  auto_start_machines = true
-  min_machines_running = 0
-  processes = ['app']
+# Run the Celery worker as the main machine process
+[processes]
+  worker = "celery -A audioverse worker -l info"
 
-[[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+[machines]
+  auto_start = true
+  auto_stop = false
+  min_machines_running = 1
+
+[env]
+  ALLOWED_HOSTS = "audioverse-backend-serr.onrender.com"
+  DATABASE_URL = "postgresql://audioverse_db_user:G8oFLDXMXruri8G1UXgOCtF9O6VJYJsL@dpg-d4d0bpfdiees73cahlm0-a.oregon-postgres.render.com/audioverse_db"
+  DEBUG = "False"
+  SECRET_KEY = "your-production-secret-key"
+  CELERY_BROKER_URL="rediss://red-d4d0ceidbo4c73dhuoo0:rgxAb1YoSLZKQq8ZzVGyXn5qPxbOCfS6@oregon-keyvalue.render.com:6379/0"
+  CELERY_RESULT_BACKEND="rediss://red-d4d0ceidbo4c73dhuoo0:rgxAb1YoSLZKQq8ZzVGyXn5qPxbOCfS6@oregon-keyvalue.render.com:6379/0"
+  REDIS_URL="rediss://red-d4d0ceidbo4c73dhuoo0:rgxAb1YoSLZKQq8ZzVGyXn5qPxbOCfS6@oregon-keyvalue.render.com:6379"
