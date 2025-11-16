@@ -1,0 +1,2 @@
+web: gunicorn audioverse.wsgi:application --bind 0.0.0.0:$PORT
+worker: celery -A audiobook_backend worker -l info
