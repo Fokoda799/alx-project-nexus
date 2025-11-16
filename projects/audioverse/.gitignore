@@ -1,0 +1,156 @@
+# =====================================
+# Python & Django
+# =====================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django migrations (you can keep these if needed)
+# Uncomment the next line to ignore all migrations
+# */migrations/
+
+# SQLite database
+db.sqlite3
+*.db
+
+# Django secret key, settings, or local configuration
+*.env
+.env
+*.local
+local_settings.py
+settings_local.py
+
+# Media & static files (usually generated or uploaded)
+media/
+staticfiles/
+static/
+assets/
+build/
+dist/
+
+# =====================================
+# Virtual Environments
+# =====================================
+
+venv/
+env/
+ENV/
+.venv/
+.Python
+
+# =====================================
+# Logs & Coverage
+# =====================================
+
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+.coverage
+htmlcov/
+coverage.xml
+nosetests.xml
+pytest.xml
+*.cover
+*.mo
+*.pot
+*.log
+celerybeat-schedule
+celerybeat.pid
+
+# =====================================
+# IDEs & Editors
+# =====================================
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# JetBrains
+*.iml
+out/
+
+# =====================================
+# OS & Misc
+# =====================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# =====================================
+# Temporary Files & Caches
+# =====================================
+
+*.swp
+*.swo
+*.tmp
+*.bak
+*.old
+*.orig
+__pypackages__/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# =====================================
+# Node (if using frontend in same repo)
+# =====================================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# =====================================
+# Docker (optional)
+# =====================================
+
+# Ignore Docker-related files (uncomment if not needed)
+# docker-compose.override.yml
+# .docker/
+# Dockerfile
+# docker-compose.yml
+
+# =====================================
+# Deployment
+# =====================================
+
+# Gunicorn, Uvicorn, etc.
+*.pid
+*.sock
+
+# Backup files
+*.bak
+*.backup
+
+# =====================================
+# Custom additions
+# =====================================
+
+# Ignore compiled translation files
+*.mo
+
+# Ignore environment folders
+.envs/
+.envrc
