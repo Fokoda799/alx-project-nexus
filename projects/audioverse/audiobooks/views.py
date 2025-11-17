@@ -23,6 +23,11 @@ class AuthorViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name', 'created_at']
 
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return super().get_permissions()
+
     @action(detail=True, methods=['get'])
     def audiobooks(self, request, pk=None):
         """Get all audiobooks by this author"""
@@ -39,6 +44,11 @@ class NarratorViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name', 'created_at']
 
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return super().get_permissions()
+
     @action(detail=True, methods=['get'])
     def audiobooks(self, request, pk=None):
         """Get all audiobooks narrated by this narrator"""
@@ -54,6 +64,11 @@ class GenreViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name', 'created_at']
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return super().get_permissions()
 
     @action(detail=True, methods=['get'])
     def audiobooks(self, request, pk=None):
