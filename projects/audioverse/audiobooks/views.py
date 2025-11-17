@@ -16,7 +16,7 @@ from .serializers import (
     AudiobookDetailSerializer
 )
 
-logger = logging.getLogger("audiobook_view")
+logger = logging.getLogger("audiobook")
 
 
 class AuthorViewSet(viewsets.ModelViewSet):

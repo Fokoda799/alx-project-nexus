@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Author, Narrator, Genre, Audiobook
 import logging
 
-logger = logging.getLogger("audiobook_serializer")
+logger = logging.getLogger("audiobook")
 
 class AuthorSerializer(serializers.ModelSerializer):
     audiobooks_count = serializers.SerializerMethodField()
