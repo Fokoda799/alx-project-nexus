@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.conf import settings
 from .utils import get_cached_audiobooks, invalidate_audiobook_cache
 from interactions.tasks import test_task
+import logging
 from .serializers import (
     AuthorSerializer, 
     NarratorSerializer, 
@@ -14,6 +15,9 @@ from .serializers import (
     AudiobookListSerializer,
     AudiobookDetailSerializer
 )
+
+logger = logging.getLogger("audiobook_view")
+
 
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()
@@ -117,16 +121,36 @@ class AudiobookViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def perform_create(self, serializer):
-        """Create audiobook and invalidate cache"""
+        logger.debug("🔶 [VIEW.PERFORM_CREATE] Starting create...")
+
         audiobook = serializer.save()
+
+        logger.debug("🔶 [VIEW.PERFORM_CREATE] Saved audiobook id=%s", audiobook.id)
+
         audiobook.refresh_from_db()
-        # Invalidate list caches
-        cache.delete_many(['audiobooks_popular', 'audiobooks_top_rated', 'audiobooks_recent'])
+        logger.debug("🔶 [VIEW.PERFORM_CREATE] Refreshed audiobook id=%s", audiobook.id)
+
+        cache.delete_many([
+            'audiobooks_popular',
+            'audiobooks_top_rated',
+            'audiobooks_recent',
+        ])
+
+        logger.debug("🔶 [VIEW.PERFORM_CREATE] Cache invalidated.")
 
     def perform_update(self, serializer):
-        """Update audiobook and invalidate cache"""
+        logger.debug("🔷 [VIEW.PERFORM_UPDATE] Starting update...")
+
         audiobook = serializer.save()
+
+        logger.debug("🔷 [VIEW.PERFORM_UPDATE] Saved audiobook id=%s", audiobook.id)
+
+        audiobook.refresh_from_db()
+        logger.debug("🔷 [VIEW.PERFORM_UPDATE] Refreshed audiobook id=%s", audiobook.id)
+
         invalidate_audiobook_cache(audiobook.id)
+
+        logger.debug("🔷 [VIEW.PERFORM_UPDATE] Cache invalidated for id=%s", audiobook.id)
 
     def perform_destroy(self, instance):
         """Delete audiobook and invalidate cache"""

@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import Author, Narrator, Genre, Audiobook
+import logging
+
+logger = logging.getLogger("audiobook_serializer")
 
 class AuthorSerializer(serializers.ModelSerializer):
     audiobooks_count = serializers.SerializerMethodField()
@@ -91,3 +94,28 @@ class AudiobookDetailSerializer(serializers.ModelSerializer):
             'id', 'average_rating', 'total_ratings', 'total_reviews', 
             'play_count', 'created_at', 'updated_at'
         ]
+
+    def create(self, validated_data):
+        logger.debug("🔵 [SERIALIZER.CREATE] validated_data: %s", validated_data)
+
+        authors = validated_data.pop("authors", [])
+        narrators = validated_data.pop("narrators", [])
+        genres = validated_data.pop("genres", [])
+
+        audiobook = Audiobook.objects.create(**validated_data)
+        logger.debug("🟢 [SERIALIZER.CREATE] Audiobook created with id=%s", audiobook.id)
+
+        audiobook.authors.set(authors)
+        audiobook.narrators.set(narrators)
+        audiobook.genres.set(genres)
+
+        logger.debug("🟣 [SERIALIZER.CREATE] M2M linked => authors=%s narrators=%s genres=%s",
+                     [a.id for a in authors],
+                     [n.id for n in narrators],
+                     [g.id for g in genres])
+
+        return audiobook
+
+    def to_representation(self, instance):
+        logger.debug("🟡 [SERIALIZER.REPR] Representing Audiobook id=%s", instance.id)
+        return super().to_representation(instance)
