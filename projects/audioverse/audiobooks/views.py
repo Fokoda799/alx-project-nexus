@@ -119,6 +119,7 @@ class AudiobookViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Create audiobook and invalidate cache"""
         audiobook = serializer.save()
+        audiobook.refresh_from_db()
         # Invalidate list caches
         cache.delete_many(['audiobooks_popular', 'audiobooks_top_rated', 'audiobooks_recent'])
 
