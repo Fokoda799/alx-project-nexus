@@ -168,7 +168,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'refresh-recommendations-weekly': {
         'task': 'recommendations.tasks.refresh_recommendations_for_all_users',
-        'schedule': crontab(minute='*/10'),  # Every 10 min
+        'schedule': crontab(day_of_week='monday', hour=0, minute=0),
     },
 }
 
@@ -229,64 +229,64 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ==============================================================
 # LOGGING
 # ==============================================================
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
 
-    'formatters': {
-        'simple': {
-            'format': '[%(levelname)s] %(message)s'
-        },
-        'verbose': {
-            'format': '[%(asctime)s] [%(levelname)s] %(name)s: %(message)s'
-        }
-    },
+#     'formatters': {
+#         'simple': {
+#             'format': '[%(levelname)s] %(message)s'
+#         },
+#         'verbose': {
+#             'format': '[%(asctime)s] [%(levelname)s] %(name)s: %(message)s'
+#         }
+#     },
 
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-    },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'simple',
+#         },
+#     },
 
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'WARNING',     # Only warnings + errors
-            'propagate': True,
-        },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'WARNING',     # Only warnings + errors
+#             'propagate': True,
+#         },
 
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
+#         'django.request': {
+#             'handlers': ['console'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
 
-        # Your custom app logs
-        'audiobook': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
+#         # Your custom app logs
+#         'audiobook': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
 
-        # Silence noisy libraries
-        'redis': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'django_redis': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'rest_framework': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-    }
-}
+#         # Silence noisy libraries
+#         'redis': {
+#             'handlers': ['console'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#         'django_redis': {
+#             'handlers': ['console'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#         'rest_framework': {
+#             'handlers': ['console'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#     }
+# }
 
 
 # ==============================================================
