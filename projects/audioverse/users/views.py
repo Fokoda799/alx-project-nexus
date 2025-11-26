@@ -108,6 +108,36 @@ class LogoutView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        
+class ResendVerificationEmailView(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        """Resend email verification link"""
+        email = request.data.get('email')
+        if not email:
+            return Response({
+                'error': 'Email is required.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(email=email)
+            if user.is_active:
+                return Response({
+                    'message': 'Account is already verified.'
+                }, status=status.HTTP_200_OK)
+            
+            # Send verification email (background task) - convert UUID to string
+            send_verification_email.delay(str(user.id))
+            
+            return Response({
+                'message': 'Verification email resent. Please check your inbox.'
+            }, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({
+                'error': 'No account found with this email.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
 
 class VerifyEmailView(views.APIView):
     permission_classes = [permissions.AllowAny]
