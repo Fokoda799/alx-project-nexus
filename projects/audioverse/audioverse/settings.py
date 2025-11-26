@@ -11,6 +11,7 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config
 import dj_database_url
+from celery.schedules import crontab
 
 # ==============================================================
 # PATHS
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'drf_yasg',
     'corsheaders',
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'users',
     'audiobooks',
     'interactions',
+    'recommendations',
 ]
 
 # ==============================================================
@@ -145,8 +148,11 @@ REST_FRAMEWORK = {
 # JWT SETTINGS
 # ==============================================================
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,  # Enable token blacklist
+    'UPDATE_LAST_LOGIN': True,
 }
 
 # ==============================================================
@@ -158,6 +164,28 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+
+CELERY_BEAT_SCHEDULE = {
+    'refresh-recommendations-weekly': {
+        'task': 'recommendations.tasks.refresh_recommendations_for_all_users',
+        'schedule': crontab(minute='*/10'),  # Every 10 min
+    },
+}
+
+# ==============================================================
+# Email Configuration
+# ==============================================================
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = f'Audioverse <{EMAIL_HOST_USER}>'
+
+# Frontend URL for email links
+FRONTEND_URL = 'http://localhost:3000'
 
 # ==============================================================
 # Redis Configuration
@@ -201,27 +229,65 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ==============================================================
 # LOGGING
 # ==============================================================
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+
+    'formatters': {
+        'simple': {
+            'format': '[%(levelname)s] %(message)s'
+        },
+        'verbose': {
+            'format': '[%(asctime)s] [%(levelname)s] %(name)s: %(message)s'
+        }
+    },
+
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
         },
     },
+
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'WARNING',     # Only warnings + errors
+            'propagate': True,
         },
+
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+
+        # Your custom app logs
         'audiobook': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-    },
+
+        # Silence noisy libraries
+        'redis': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django_redis': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'rest_framework': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    }
 }
+
 
 # ==============================================================
 # INTERNATIONALIZATION

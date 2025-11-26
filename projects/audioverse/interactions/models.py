@@ -65,3 +65,10 @@ class Bookmark(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.audiobook.title} @ {self.timestamp_seconds}s"
+
+
+from django.db import models
+from django.contrib.auth import get_user_model
+import uuid
+
+User = get_user_model()

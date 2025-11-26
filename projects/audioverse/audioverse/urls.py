@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/auth/', include('users.urls')),
     path('api/', include('audiobooks.urls')),
     path('api/', include('interactions.urls')),
+    path('api/', include('recommendations.urls')),
     
     # API Documentation
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

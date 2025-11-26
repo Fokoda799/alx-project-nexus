@@ -105,7 +105,6 @@ class AudiobookViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         """Retrieve audiobook with caching"""
-        test_task.delay()  # Example of calling the test task
         audiobook_id = kwargs.get('pk')
         cache_key = f'audiobook_{audiobook_id}'
         

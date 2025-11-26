@@ -21,6 +21,7 @@ db.sqlite3
 *.local
 local_settings.py
 settings_local.py
+myenv/
 
 # Media & static files (usually generated or uploaded)
 media/
@@ -39,6 +40,7 @@ env/
 ENV/
 .venv/
 .Python
+.myenv/
 
 # =====================================
 # Logs & Coverage

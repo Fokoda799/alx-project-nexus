@@ -20,13 +20,17 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('password2')
         user = User.objects.create_user(**validated_data)
+        user.is_active = False  # User must verify email first
+        user.save()
         return user
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'profile_avatar', 'bio', 'created_at']
         read_only_fields = ['id', 'created_at']
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """Detailed user profile with statistics"""
@@ -55,3 +59,34 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_total_reviews(self, obj):
         return obj.review_set.count()
+
+
+class PasswordUpdateSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True, validators=[validate_password])
+    new_password2 = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['new_password2']:
+            raise serializers.ValidationError({"new_password": "New password fields didn't match."})
+        return attrs
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is incorrect.")
+        return value
+
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    new_password = serializers.CharField(required=True, write_only=True, validators=[validate_password])
+    new_password2 = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['new_password2']:
+            raise serializers.ValidationError({"new_password": "Password fields didn't match."})
+        return attrs
