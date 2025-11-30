@@ -108,7 +108,7 @@ def _generate_genre_based_recommendations(user, limit=15):
     
     # Find audiobooks in those genres that user hasn't interacted with
     recommendations = Audiobook.objects.filter(
-        genres__overlap=list(user_genres)
+        genres__in=list(user_genres)
     ).exclude(
         listeningprogress__user=user
     ).annotate(
@@ -146,7 +146,7 @@ def _generate_author_based_recommendations(user, limit=10):
     
     # Find other books by these authors (using overlap for ArrayField)
     recommendations = Audiobook.objects.filter(
-        authors__overlap=list(favorite_authors)
+        authors__in=list(favorite_authors)
     ).exclude(
         listeningprogress__user=user
     ).annotate(
@@ -185,7 +185,7 @@ def _generate_similar_recommendations(user, limit=10):
         return []
     
     recommendations = Audiobook.objects.filter(
-        genres__overlap=similar_books.genres,
+        genres__in=similar_books.genres,
         average_rating__gte=4.0
     ).exclude(
         listeningprogress__user=user
@@ -217,7 +217,7 @@ def _generate_popular_recommendations(user, limit=10):
         ).order_by('-popularity', '-average_rating')[:limit]
     else:
         recommendations = Audiobook.objects.filter(
-            genres__overlap=list(user_genres)
+            genres__in=list(user_genres)
         ).exclude(
             listeningprogress__user=user
         ).annotate(
